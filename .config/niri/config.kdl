@@ -1,0 +1,375 @@
+// ═════════════════════════════════════════════════════════════════
+//  niri config
+//
+//  1. General        5. Window rules
+//  2. Input          6. Autostart
+//  3. Layout         7. Key bindings
+//  4. Animations     8. Includes
+// ═════════════════════════════════════════════════════════════════
+
+
+// ═════════════════════════════════════════════════════════════════
+//  1. General
+// ═════════════════════════════════════════════════════════════════
+
+prefer-no-csd
+
+environment {
+    QT_QPA_PLATFORMTHEME "kde"
+    XDG_CURRENT_DESKTOP "niri"
+    XDG_SESSION_TYPE "wayland"
+}
+
+cursor {
+    xcursor-theme "WhiteSur-cursors"
+    xcursor-size 24
+}
+
+screenshot-path "/home/devourer/Downloads/ScreenshotsDevourer/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+
+// ═════════════════════════════════════════════════════════════════
+//  2. Input
+// ═════════════════════════════════════════════════════════════════
+
+input {
+    keyboard {
+        xkb {
+            layout "us,ru"
+            options "grp:caps_toggle"
+        }
+        numlock
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+    // Mouse speed
+    mouse {
+        accel-speed 0
+        accel-profile "flat"
+    }
+    focus-follows-mouse max-scroll-amount="0%"
+}
+
+
+// ═════════════════════════════════════════════════════════════════
+//  3. Layout
+// ═════════════════════════════════════════════════════════════════
+
+layout {
+    gaps 20
+    center-focused-column "never"
+    background-color "transparent"
+
+    // Column widths
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+    }
+    default-column-width { proportion 0.5; }
+
+    // Static colours: the include at the bottom is applied after this block and wins
+    focus-ring {
+        on
+        width 1
+        active-color "#151314"
+        inactive-color "#000000"
+    }
+
+    border {
+        on
+        width 2
+        active-color "#ffffff"
+        inactive-color "#000000"
+        urgent-color "#000000"
+    }
+
+    shadow {
+        on
+        softness 20
+        spread 3
+        offset x=0 y=4
+        color "#000000aa"
+    }
+}
+
+
+// ═════════════════════════════════════════════════════════════════
+//  4. Animations
+// ═════════════════════════════════════════════════════════════════
+
+animations {
+    // Uncomment to turn off all animations.
+    // off
+
+    // Slow down all animations by this factor. Values below 1 speed them up instead.
+    // slowdown 3.0
+}
+
+
+// ═════════════════════════════════════════════════════════════════
+//  5. Window rules
+//  Applied top to bottom, a later rule overrides an earlier one,
+//  so the catch-all rule has to stay first.
+// ═════════════════════════════════════════════════════════════════
+
+// All windows
+window-rule {
+    geometry-corner-radius 0
+    clip-to-geometry true
+    opacity 1.0
+    background-effect { blur true; }
+}
+
+// Open maximized
+window-rule {
+    match app-id="VirtualBoxVM"
+    match app-id="zen"
+    match app-id="firefox"
+    open-maximized true
+}
+// Border without a background behind translucent windows
+window-rule {
+    match app-id="spotify"
+    match app-id="AyuGram"
+    match app-id="foot"
+    draw-border-with-background false
+}
+
+
+// Block out from screen capture
+window-rule {
+    match app-id=r#"^org\.keepassxc\.KeePassXC$"#
+    match app-id=r#"^org\.gnome\.World\.Secrets$"#
+    block-out-from "screen-capture"
+}
+
+
+// ═════════════════════════════════════════════════════════════════
+//  6. Autostart
+// ═════════════════════════════════════════════════════════════════
+
+// Shell
+spawn-at-startup "noctalia"
+
+// D-Bus environment (for Steam) and KDE Connect
+spawn-at-startup "dbus-update-activation-environment" "WAYLAND_DISPLAY" "XDG_CURRENT_DESKTOP=niri" "XDG_SESSION_TYPE=wayland"
+spawn-at-startup "sh" "-c" "dbus-update-activation-environment WAYLAND_DISPLAY QT_QPA_PLATFORM=wayland"
+spawn-at-startup "kdeconnectd"
+
+// Audio and backlight
+spawn-at-startup "pipewire"
+spawn-at-startup "wireplumber"
+spawn-at-startup "pipewire-pulse"
+spawn-at-startup "brightnessctl" "set" "100%"
+
+// Background services
+
+
+// ═════════════════════════════════════════════════════════════════
+//  7. Key bindings
+// ═════════════════════════════════════════════════════════════════
+
+binds {
+    // ── Apps & launchers ─────────────────────────────────────────────
+    Alt+Q hotkey-overlay-title="Open a Terminal: foot"   { spawn "foot"; }
+    Alt+S hotkey-overlay-title="Run Application Launcher" { spawn "noctalia" "msg" "panel-toggle" "launcher"; }
+    Mod+X { spawn "noctalia" "msg" "panel-toggle" "wallpaper"; }
+
+    Alt+Z      { spawn "zen"; }
+    Alt+X      { spawn "dolphin"; }
+    Alt+T      { spawn "spotify"; }
+    Ctrl+Alt+O { spawn "obs"; }
+
+    // Overlay
+    Ctrl+Alt+D { spawn "noctalia" "msg" "panel-toggle" "noctalia/notes:panel"; }
+    Ctrl+Alt+K {spawn "noctalia" "msg" "panel-toggle"  "kenn/keybind-cheatsheet:cheatsheet"; }
+
+
+    // ── Media & hardware keys ────────────────────────────────────────
+    // Volume & microphone
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    // Player
+    XF86AudioPlay allow-when-locked=true { spawn-sh "playerctl play-pause"; }
+    XF86AudioStop allow-when-locked=true { spawn-sh "playerctl stop"; }
+    XF86AudioPrev allow-when-locked=true { spawn-sh "playerctl previous"; }
+    XF86AudioNext allow-when-locked=true { spawn-sh "playerctl next"; }
+
+    // Brightness
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+10%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "10%-"; }
+
+
+    // ── Screenshots ──────────────────────────────────────────────────
+    Mod+Shift+S { screenshot; }
+    Ctrl+Home   { screenshot-screen; }
+
+
+    // ── Windows ──────────────────────────────────────────────────────
+    Mod+O repeat=false { toggle-overview; }
+    Alt+A repeat=false { close-window; }
+
+    Mod+F       { maximize-column; }
+    Mod+Shift+F { fullscreen-window; }
+    Mod+Ctrl+F  { expand-column-to-available-width; }
+
+    Mod+V       { toggle-window-floating; }
+    Mod+Shift+V { switch-focus-between-floating-and-tiling; }
+    Mod+W       { toggle-column-tabbed-display; }
+
+
+    // ── Focus ────────────────────────────────────────────────────────
+    Mod+Left  { focus-column-left; }
+    Mod+Down  { focus-window-down; }
+    Mod+Up    { focus-window-up; }
+    Mod+Right { focus-column-right; }
+    Mod+H     { focus-column-left; }
+    Mod+J     { focus-window-down; }
+    Mod+K     { focus-window-up; }
+    Mod+L     { focus-column-right; }
+
+    Mod+Home { focus-column-first; }
+    Mod+End  { focus-column-last; }
+
+
+    // ── Move ─────────────────────────────────────────────────────────
+    Mod+Ctrl+Left  { move-column-left; }
+    Mod+Ctrl+Down  { move-window-down; }
+    Mod+Ctrl+Up    { move-window-up; }
+    Mod+Ctrl+Right { move-column-right; }
+    Mod+Ctrl+H     { move-column-left; }
+    Mod+Ctrl+J     { move-window-down; }
+    Mod+Ctrl+K     { move-window-up; }
+    Mod+Ctrl+L     { move-column-right; }
+
+    Mod+Ctrl+Home { move-column-to-first; }
+    Mod+Ctrl+End  { move-column-to-last; }
+
+
+    // ── Columns ──────────────────────────────────────────────────────
+    Mod+BracketLeft  { consume-or-expel-window-left; }
+    Mod+BracketRight { consume-or-expel-window-right; }
+
+    Mod+Comma  { consume-window-into-column; }
+    Mod+Period { expel-window-from-column; }
+
+
+    // ── Sizing & centering ───────────────────────────────────────────
+    Mod+R       { switch-preset-column-width; }
+    Mod+Shift+R { switch-preset-window-height; }
+    Mod+Ctrl+R  { reset-window-height; }
+
+    Mod+Minus { set-column-width "-5%"; }
+    Mod+Equal { set-column-width "+5%"; }
+
+    Mod+Shift+Minus { set-window-height "-5%"; }
+    Mod+Shift+Equal { set-window-height "+5%"; }
+
+    Mod+T      { center-column; }
+    Mod+Ctrl+C { center-visible-columns; }
+
+
+    // ── Monitors ─────────────────────────────────────────────────────
+    // Focus
+    Mod+Shift+Left  { focus-monitor-left; }
+    Mod+Shift+Down  { focus-monitor-down; }
+    Mod+Shift+Up    { focus-monitor-up; }
+    Mod+Shift+Right { focus-monitor-right; }
+    Mod+Shift+H     { focus-monitor-left; }
+    Mod+Shift+J     { focus-monitor-down; }
+    Mod+Shift+K     { focus-monitor-up; }
+    Mod+Shift+L     { focus-monitor-right; }
+
+    // Move column
+    Mod+Shift+Ctrl+Left  { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+Down  { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+Up    { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+Right { move-column-to-monitor-right; }
+    Mod+Shift+Ctrl+H     { move-column-to-monitor-left; }
+    Mod+Shift+Ctrl+J     { move-column-to-monitor-down; }
+    Mod+Shift+Ctrl+K     { move-column-to-monitor-up; }
+    Mod+Shift+Ctrl+L     { move-column-to-monitor-right; }
+
+
+    // ── Workspaces ───────────────────────────────────────────────────
+    // Switch
+    Mod+Page_Down { focus-workspace-down; }
+    Mod+Page_Up   { focus-workspace-up; }
+    Mod+U         { focus-workspace-down; }
+    Mod+I         { focus-workspace-up; }
+
+    // Move column
+    Mod+Ctrl+Page_Down { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up   { move-column-to-workspace-up; }
+    Mod+Ctrl+U         { move-column-to-workspace-down; }
+    Mod+Ctrl+I         { move-column-to-workspace-up; }
+
+    // Reorder
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+    Mod+Shift+U         { move-workspace-down; }
+    Mod+Shift+I         { move-workspace-up; }
+
+    // By number
+    Mod+1 { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Ctrl+1 { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+
+    // ── Mouse wheel ──────────────────────────────────────────────────
+    Mod+WheelScrollDown      cooldown-ms=150 { focus-workspace-down; }
+    Mod+WheelScrollUp        cooldown-ms=150 { focus-workspace-up; }
+    Mod+Ctrl+WheelScrollDown cooldown-ms=150 { move-column-to-workspace-down; }
+    Mod+Ctrl+WheelScrollUp   cooldown-ms=150 { move-column-to-workspace-up; }
+
+    Mod+WheelScrollRight      { focus-column-right; }
+    Mod+WheelScrollLeft       { focus-column-left; }
+    Mod+Ctrl+WheelScrollRight { move-column-right; }
+    Mod+Ctrl+WheelScrollLeft  { move-column-left; }
+
+    Mod+Shift+WheelScrollDown      { focus-column-right; }
+    Mod+Shift+WheelScrollUp        { focus-column-left; }
+    Mod+Shift+Ctrl+WheelScrollDown { move-column-right; }
+    Mod+Shift+Ctrl+WheelScrollUp   { move-column-left; }
+}
+
+
+// ═════════════════════════════════════════════════════════════════
+//  8. Includes
+//  Keep at the very end: an include is applied on top of everything above.
+// ═════════════════════════════════════════════════════════════════
+
+
+
+
+
+
+
+
+
+
+include "noctalia.kdl"

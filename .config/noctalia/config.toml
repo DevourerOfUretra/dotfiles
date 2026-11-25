@@ -1,0 +1,4 @@
+[theme.templates]
+enable_builtin_templates = true
+builtin_ids = [ "btop" ]   # <-- Проверьте, чтобы btop был именно здесь!
+
