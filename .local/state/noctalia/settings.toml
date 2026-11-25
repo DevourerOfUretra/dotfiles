@@ -1,0 +1,154 @@
+config_version = 20
+
+[audio]
+colorize_icons = true
+enable_overdrive = true
+
+[bar]
+order = [ "devourer" ]
+
+    [bar.devourer]
+    background_opacity = 0.34999999217689037
+    capsule_radius = 0
+    capsule_thickness = 0.99999998137354851
+    center = [ "workspaces" ]
+    contact_shadow = true
+    end = [ "tray", "group:g1", "cpu", "ram" ]
+    margin_edge = 8
+    margin_ends = 350
+    position = "bottom"
+    radius = 0
+    start = [ "clock", "media" ]
+    widget_spacing = 15
+
+        [[bar.devourer.capsule_group]]
+        accordion = false
+        accordion_direction = "end"
+        border_width = 0.0
+        enabled = true
+        fill = "surface"
+        id = "g1"
+        members = [ "bluetooth", "volume" ]
+        opacity = 0.0
+        padding = 6.0
+        radius = 0.0
+        widget_spacing = 15
+
+[control_center]
+hidden_tabs = [ "monitor", "power", "weather", "calendar", "notifications", "screen-time" ]
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@eDP-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@eDP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 960.0
+    cy = 898.0
+    output = "eDP-1"
+    placement_height = 1080.0
+    placement_width = 1920.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@eDP-1".settings]
+        background_color = "surface_container"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_media_controls = true
+        show_password_reveal = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[notification]
+layer = "overlay"
+
+[shell]
+font_family = "IosevkaTerm NF"
+lang = "ru"
+settings_expand_all_groups = true
+
+    [shell.launcher]
+    categories = false
+    compact = true
+    ignore_mouse = true
+    layout = "simple"
+    show_app_origin_indicator = false
+    show_icons = false
+
+    [shell.panel]
+    clipboard_placement = "attached"
+    control_center_placement = "floating"
+    polkit_placement = "attached"
+    session_placement = "floating"
+    wallpaper_show_names = false
+
+[system.monitor]
+disk_poll_seconds = 120
+gpu_poll_seconds = 30
+network_poll_seconds = 120
+
+[theme]
+custom_palette = "11936561-ts"
+source = "wallpaper"
+
+    [theme.templates]
+    builtin_ids = [ "btop", "cava", "foot", "gtk3", "gtk4", "kcolorscheme", "niri", "qt" ]
+    community_ids = [
+        "spicetify",
+        "zen-browser",
+        "telegram",
+        "lazyvim",
+        "neovim",
+        "fastfetch",
+        "obs",
+        "whitesur-icons",
+        "lsd",
+        "yazi"
+    ]
+
+[wallpaper]
+directory = "/home/devourer/Pictures/Wallpapers"
+
+    [wallpaper.default]
+    path = "/home/devourer/Pictures/Wallpapers/11936561.jpg"
+
+    [wallpaper.last]
+    path = "/home/devourer/Pictures/Wallpapers/11936561.jpg"
+
+    [wallpaper.monitors.eDP-1]
+    path = "/home/devourer/Pictures/Wallpapers/11936561.jpg"
+
+    [[wallpaper.favorite]]
+    path = "/home/devourer/Pictures/Wallpapers/11936561.jpg"
+
+[widget.clock]
+format = "{:%H:%M:%S}"
+
+[widget.cpu]
+visualization = "none"
+
+[widget.ram]
+visualization = "none"
+
+[widget.volume]
+show_glyph = false
+
+[widget.workspaces]
+style = "minimal"
